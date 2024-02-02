@@ -22,7 +22,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 include(GNUInstallDirs)
 
-find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Core Network)
 
 include(FindOpenSSL)
 
@@ -30,8 +30,16 @@ if(OPENSSL_FOUND AND TARGET OpenSSL::Crypto )
 	qt_standard_project_setup()
 
 	add_library(vault include/vault.hpp src/vault.cpp)
+        target_include_directories(vault PUBLIC  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+            "$<INSTALL_INTERFACE:/Esterv/${PROJECT_NAME}>")
 
-	target_link_libraries(vault PRIVATE Qt6::Core OpenSSL::Crypto )
+        target_link_libraries(vault PUBLIC Qt6::Core Qt6::Network OpenSSL::Crypto)
+
+        add_executable(QVaultCli src/QVaultCli.cpp)
+        target_link_libraries(QVaultCli PRIVATE vault)
+
+        add_library(${PROJECT_NAME}::vault ALIAS vault)
+        add_executable(${PROJECT_NAME}::QVaultCli ALIAS QVaultCli)
 
 endif()
 
