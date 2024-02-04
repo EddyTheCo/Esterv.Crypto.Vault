@@ -1,4 +1,4 @@
-if(USE_QML)
+if(USE_QML AND BUILD_EXAMPLES)
     FetchContent_Declare(
         EstervDesigns
         GIT_REPOSITORY https://github.com/EddyTheCo/MyDesigns.git
@@ -55,4 +55,4 @@ if(EMSCRIPTEN OR ANDROID)
 target_compile_definitions(${example} PRIVATE FORCE_STYLE="Esterv.Controls.Flat")
 endif(EMSCRIPTEN OR ANDROID)
 endforeach()
-endif(USE_QML)
+endif(USE_QML AND BUILD_EXAMPLES)
