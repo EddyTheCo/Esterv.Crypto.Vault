@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.24)
-
+option(USE_QML "Create QML types and modules" ON)
 include(${CMAKE_CURRENT_BINARY_DIR}/local_conf.cmake OPTIONAL)
 
 include(FetchContent)
@@ -22,7 +22,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 include(GNUInstallDirs)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Network)
+if(USE_QML)
+    find_package(Qt6 COMPONENTS Core Gui Quick Core Network)
+else()
+    find_package(Qt6 COMPONENTS Core Network)
+endif()
+
 
 find_package(OpenSSL)
 
@@ -42,39 +47,120 @@ if(NOT OPENSSL_FOUND)
         message(STATUS "openssl is installed in ${openssl_SOURCE_DIR}")
         set(OPENSSL_FOUND ON)
         add_library(OpenSSL::Crypto UNKNOWN IMPORTED)
-            set_target_properties(OpenSSL::Crypto PROPERTIES
-              INTERFACE_INCLUDE_DIRECTORIES "${openssl_SOURCE_DIR}/include")
+        set_target_properties(OpenSSL::Crypto PROPERTIES
+            INTERFACE_INCLUDE_DIRECTORIES "${openssl_SOURCE_DIR}/include")
 
-              set_target_properties(OpenSSL::Crypto PROPERTIES
-                IMPORTED_LINK_INTERFACE_LANGUAGES "C"
-                IMPORTED_LOCATION "${openssl_SOURCE_DIR}/libx32/libcrypto.a")
+        set_target_properties(OpenSSL::Crypto PROPERTIES
+            IMPORTED_LINK_INTERFACE_LANGUAGES "C"
+            IMPORTED_LOCATION "${openssl_SOURCE_DIR}/libx32/libcrypto.a")
     endif(NOT openssl_POPULATED)
 endif(EMSCRIPTEN)
 endif(NOT OPENSSL_FOUND)
 
-if(OPENSSL_FOUND AND TARGET OpenSSL::Crypto )
+if(OPENSSL_FOUND AND TARGET OpenSSL::Crypto AND Qt6_FOUND)
     qt_standard_project_setup()
-
     add_library(vault include/vault.hpp src/vault.cpp)
-    target_include_directories(vault PUBLIC  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        "$<INSTALL_INTERFACE:/Esterv/${PROJECT_NAME}>")
+    add_library(${PROJECT_NAME}::vault ALIAS vault)
+    if(USE_QML)
+        qt6_add_qml_module(vault
+            URI  Esterv.Utils.Vault
+            VERSION 1.0
+            RESOURCE_PREFIX
+            "/esterVtech.com/imports"
+            OUTPUT_TARGETS out_targets_var
+            OUTPUT_DIRECTORY
+            ${CMAKE_BINARY_DIR}/Esterv/Utils/Vault
+            IMPORT_PATH ${CMAKE_BINARY_DIR}
+        )
+    add_library(${PROJECT_NAME}::vaultplugin ALIAS vaultplugin)
+    target_link_libraries(vault PUBLIC Qt6::Gui Qt6::Quick)
+    target_compile_definitions(vault PRIVATE USE_QML)
 
-    target_link_libraries(vault PUBLIC Qt6::Core Qt6::Network OpenSSL::Crypto)
-    target_compile_definitions(vault PRIVATE WINDOWS_QVAULT)
-    if(EMSCRIPTEN)
-        target_compile_definitions(vault PRIVATE USE_EMSCRIPTEN)
-    endif(EMSCRIPTEN)
+    install(TARGETS ${out_targets_var}
+        EXPORT ${PROJECT_NAME}-config
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        COMPONENT vault
+    )
+    install(DIRECTORY ${CMAKE_BINARY_DIR}/Esterv/Utils/Vault
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/Esterv/Utils
+        COMPONENT vault
+    )
+    install(TARGETS vaultplugin
+        EXPORT ${PROJECT_NAME}-config
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/Esterv/Utils/Vault
+        COMPONENT vault
+    )
+endif(USE_QML)
 
+
+target_include_directories(vault PUBLIC  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    "$<INSTALL_INTERFACE:/Esterv/${PROJECT_NAME}>")
+
+target_link_libraries(vault PUBLIC Qt6::Core Qt6::Network OpenSSL::Crypto)
+target_compile_definitions(vault PRIVATE WINDOWS_QVAULT)
+if(EMSCRIPTEN)
+    target_compile_definitions(vault PRIVATE USE_EMSCRIPTEN)
+endif(EMSCRIPTEN)
+
+if(NOT EMSCRIPTEN AND NOT ANDROID)
     add_executable(QVaultCli src/QVaultCli.cpp)
     target_link_libraries(QVaultCli PRIVATE vault)
-
-    add_library(${PROJECT_NAME}::vault ALIAS vault)
     add_executable(${PROJECT_NAME}::QVaultCli ALIAS QVaultCli)
+    install(TARGETS QVaultCli
+        EXPORT ${PROJECT_NAME}-config
+        DESTINATION ${CMAKE_INSTALL_BINDIR}
+        COMPONENT QVaultCli
+    )
+endif(NOT EMSCRIPTEN AND NOT ANDROID)
 
-    if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-        add_subdirectory(examples)
-    endif(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
+install(TARGETS vault
+    EXPORT ${PROJECT_NAME}-config
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT vault
+)
+install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/include/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Esterv/${PROJECT_NAME}
+    COMPONENT vault
+)
+
+install(EXPORT ${PROJECT_NAME}-config
+    FILE ${PROJECT_NAME}-config.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Esterv
+    NAMESPACE ${PROJECT_NAME}::
+    COMPONENT ${PROJECT_NAME}
+)
+include(CMakePackageConfigHelpers)
+configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
+        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+        INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Esterv
+        )
+write_basic_package_version_file(
+        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+        VERSION ${VERSION}
+        COMPATIBILITY SameMajorVersion
+        )
+install(FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Esterv
+        )
+export(EXPORT ${PROJECT_NAME}-config
+        FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
+        )
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    add_subdirectory(examples)
+    set(CPACK_PACKAGE_CONTACT "estervtech")
+    include(CTest)
+    set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-v${SEMVER}-${CMAKE_SYSTEM_NAME}_${CMAKE_SYSTEM_VERSION}-${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_CXX_COMPILER_ID}")
+    include(CPack)
 endif()
 
 
+endif(OPENSSL_FOUND AND TARGET OpenSSL::Crypto AND Qt6_FOUND)
+
+
+if(BUILD_DOCS)
+    get_target_property(build_docs cmake_build_docs SOURCES)
+    include(${build_docs})
+endif()

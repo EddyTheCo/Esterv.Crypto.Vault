@@ -1,11 +1,22 @@
-#include"vault.hpp"
-#include<QCoreApplication>
+
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
+
+#if defined(FORCE_STYLE)
+#include <QQuickStyle>
+#endif
+
 int main(int argc, char *argv[])
 {
-    QCoreApplication app(argc, argv);
-    qutils::Vault* vault=new qutils::Vault(&app);
-    vault->setData("This is a test","password");
-    auto data=vault->getData("password");
-    qDebug()<<data;
+	QGuiApplication app(argc, argv);
+
+#if defined(FORCE_STYLE)
+	QQuickStyle::setStyle(FORCE_STYLE);
+#endif
+	QQmlApplicationEngine engine;
+    engine.addImportPath("qrc:/esterVtech.com/imports");
+    const QUrl url=QUrl("qrc:/esterVtech.com/imports/Esimple/qml/simple.qml");
+
+    engine.load(url);
     return app.exec();
 }

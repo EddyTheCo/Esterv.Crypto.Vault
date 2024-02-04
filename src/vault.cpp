@@ -34,7 +34,53 @@ Vault::Vault(QObject *parent,const QString filename):QObject(parent),m_ctx(EVP_C
     m_isEmpty(true)
 {
     readFromFile();
+    connect(this,&Vault::fileChanged,this,&Vault::restart);
     connect(this,&QObject::destroyed,this,[=](){EVP_CIPHER_CTX_free(m_ctx);});
+}
+void Vault::restart()
+{
+    m_cipherText=QByteArray(128,Qt::Initialization::Uninitialized);
+    setIsEmpty(true);
+    readFromFile();
+}
+bool Vault::changePassword(QString oldPass,QString newPass)
+{
+    if(m_isEmpty||newPass.size()<8||oldPass.size()<8) return false;
+
+    auto oldPassHash=QPasswordDigestor::deriveKeyPbkdf2(
+        QCryptographicHash::Sha512,
+        oldPass.toUtf8(),
+        m_iv,
+        NITERATIONS,
+        64);
+
+    if(oldPassHash==m_passHash)
+    {
+        auto oldkey=QPasswordDigestor::deriveKeyPbkdf2(
+            QCryptographicHash::Sha256,
+            oldPass.toUtf8(),
+            m_iv,
+            NITERATIONS,
+            32);
+        const auto plainText=getContent(oldkey);
+        setRandomIV();
+        auto newPassHash=QPasswordDigestor::deriveKeyPbkdf2(
+            QCryptographicHash::Sha512,
+            newPass.toUtf8(),
+            m_iv,
+            NITERATIONS,
+            64);
+        auto newkey=QPasswordDigestor::deriveKeyPbkdf2(
+            QCryptographicHash::Sha256,
+            newPass.toUtf8(),
+            m_iv,
+            NITERATIONS,
+            32);
+        setContent(plainText,newkey);
+        m_passHash=newPassHash;
+        return true;
+    }
+    return false;
 }
 void Vault::writeToFile()
 {
@@ -141,7 +187,11 @@ bool Vault::setContent(QByteArray plainText, QByteArray key)
     writeToFile();
     return true;
 }
-QByteArray Vault::getData(QByteArray password)
+QString Vault::getDataString(QString password)const
+{
+    return QString(getData(password.toUtf8()));
+}
+QByteArray Vault::getData(QByteArray password)const
 {
     auto passHash=QPasswordDigestor::deriveKeyPbkdf2(
         QCryptographicHash::Sha512,
@@ -163,8 +213,15 @@ QByteArray Vault::getData(QByteArray password)
     }
     return QByteArray();
 }
+bool Vault::setDataString(QString plainText,QString password)
+{
+    return setData(plainText.toUtf8(),password.toUtf8());
+}
 bool Vault::setData(QByteArray plainText,QByteArray password)
 {
+
+    if(password.size()<8)return false;
+
     auto passHash=QPasswordDigestor::deriveKeyPbkdf2(
         QCryptographicHash::Sha512,
         password,
@@ -186,7 +243,7 @@ bool Vault::setData(QByteArray plainText,QByteArray password)
     }
     return false;
 }
-QByteArray Vault::getContent(QByteArray key)
+QByteArray Vault::getContent(QByteArray key)const
 {
     int len;
     int plaintext_len;
