@@ -2,7 +2,7 @@
 
 This repo implements a C++ class and QML Module for storing encrypted data as a vault. 
 The vault is stored on the local storage of the user.
-I have tested the library on Linux, Android and the Browser.
+I have tested the library on Linux, Android, and the Browser.
 
 ## Dependencies
 
@@ -25,7 +25,7 @@ cmake --install .
 ```
 where `installDir` is the installation path, `QTDEPLOY` install the examples and Qt dependencies using the 
 [cmake-deployment-api](https://www.qt.io/blog/cmake-deployment-api). Setting the `USE_QML` variable produce or not the QML module.
-One can choose to build or not the examples and the documentation with the `BUILD_EXAMPLES` and `BUILD_DOCS` variables.
+One can choose to build the examples and the documentation with the `BUILD_EXAMPLES` and `BUILD_DOCS` variables.
 
 ### From GitHub releases
 Download the releases from this repo. 
@@ -44,7 +44,7 @@ FetchContent_MakeAvailable(QtVault)
 
 target_link_libraries(<target> <PRIVATE|PUBLIC|INTERFACE> QtVault::vault)
 ```
-If want to use the QML module also add
+If you want to use the QML module also add
 ```
 $<$<STREQUAL:$<TARGET_PROPERTY:QtVault::vault,TYPE>,STATIC_LIBRARY>:QtVault::vaultplugin>
 ```
