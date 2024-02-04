@@ -33,8 +33,17 @@ find_package(OpenSSL)
 
 
 if(NOT OPENSSL_FOUND)
-    if(EMSCRIPTEN)
-        set(builturl "https://github.com/EddyTheCo/install-openssl-action/releases/latest/download/openssl-wasm.tar")
+    if(EMSCRIPTEN OR ANDROID)
+        if(EMSCRIPTEN)
+            set(builturl "https://github.com/EddyTheCo/install-openssl-action/releases/latest/download/openssl-wasm_true-android_none.tar")
+        endif(EMSCRIPTEN)
+        if(ANDROID)
+            set(android_abi_ossl "android-arm")
+            if(ANDROID_ABI STREQUAL "arm64-v8a")
+                set(android_abi_ossl "android-arm64")
+            endif()
+            set(builturl "https://github.com/EddyTheCo/install-openssl-action/releases/latest/download/openssl-wasm_false-android_${android_abi_ossl}.tar")
+        endif(ANDROID)
         FetchContent_Declare(
             openssl
             DOWNLOAD_EXTRACT_TIMESTAMP true
@@ -50,9 +59,16 @@ if(NOT OPENSSL_FOUND)
         set_target_properties(OpenSSL::Crypto PROPERTIES
             INTERFACE_INCLUDE_DIRECTORIES "${openssl_SOURCE_DIR}/include")
 
-        set_target_properties(OpenSSL::Crypto PROPERTIES
-            IMPORTED_LINK_INTERFACE_LANGUAGES "C"
-            IMPORTED_LOCATION "${openssl_SOURCE_DIR}/libx32/libcrypto.a")
+        if(EMSCRIPTEN)
+            set_target_properties(OpenSSL::Crypto PROPERTIES
+                IMPORTED_LINK_INTERFACE_LANGUAGES "C"
+                IMPORTED_LOCATION "${openssl_SOURCE_DIR}/libx32/libcrypto.a")
+        endif(EMSCRIPTEN)
+        if(ANDROID)
+            set_target_properties(OpenSSL::Crypto PROPERTIES
+                IMPORTED_LINK_INTERFACE_LANGUAGES "C"
+                IMPORTED_LOCATION "${openssl_SOURCE_DIR}/lib/libcrypto.a")
+        endif(ANDROID)
     endif(NOT openssl_POPULATED)
 endif(EMSCRIPTEN)
 endif(NOT OPENSSL_FOUND)
@@ -81,15 +97,15 @@ if(OPENSSL_FOUND AND TARGET OpenSSL::Crypto AND Qt6_FOUND)
         DESTINATION ${CMAKE_INSTALL_LIBDIR}
         COMPONENT vault
     )
-    install(DIRECTORY ${CMAKE_BINARY_DIR}/Esterv/Utils/Vault
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/Esterv/Utils
-        COMPONENT vault
-    )
-    install(TARGETS vaultplugin
-        EXPORT ${PROJECT_NAME}-config
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/Esterv/Utils/Vault
-        COMPONENT vault
-    )
+install(DIRECTORY ${CMAKE_BINARY_DIR}/Esterv/Utils/Vault
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/Esterv/Utils
+    COMPONENT vault
+)
+install(TARGETS vaultplugin
+    EXPORT ${PROJECT_NAME}-config
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/Esterv/Utils/Vault
+    COMPONENT vault
+)
 endif(USE_QML)
 
 
@@ -132,22 +148,22 @@ install(EXPORT ${PROJECT_NAME}-config
 )
 include(CMakePackageConfigHelpers)
 configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
-        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-        INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Esterv
-        )
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Esterv
+)
 write_basic_package_version_file(
-        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-        VERSION ${VERSION}
-        COMPATIBILITY SameMajorVersion
-        )
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+    VERSION ${VERSION}
+    COMPATIBILITY SameMajorVersion
+)
 install(FILES
-        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Esterv
-        )
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Esterv
+)
 export(EXPORT ${PROJECT_NAME}-config
-        FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
-        )
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
+)
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     add_subdirectory(examples)
     set(CPACK_PACKAGE_CONTACT "estervtech")
