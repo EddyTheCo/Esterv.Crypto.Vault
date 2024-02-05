@@ -70,7 +70,7 @@ if(NOT OPENSSL_FOUND)
                 IMPORTED_LOCATION "${openssl_SOURCE_DIR}/lib/libcrypto.a")
         endif(ANDROID)
     endif(NOT openssl_POPULATED)
-endif(EMSCRIPTEN)
+endif(EMSCRIPTEN OR ANDROID)
 endif(NOT OPENSSL_FOUND)
 
 if(OPENSSL_FOUND AND TARGET OpenSSL::Crypto AND Qt6_FOUND)
