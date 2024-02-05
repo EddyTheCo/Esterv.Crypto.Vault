@@ -127,8 +127,8 @@ if(NOT EMSCRIPTEN AND NOT ANDROID)
     MACOSX_BUNDLE ON
     )
     install(TARGETS QVaultCli
-        BUNDLE  DESTINATION .
         EXPORT ${PROJECT_NAME}-config
+        BUNDLE  DESTINATION .        
         DESTINATION ${CMAKE_INSTALL_BINDIR}
         COMPONENT QVaultCli
     )
