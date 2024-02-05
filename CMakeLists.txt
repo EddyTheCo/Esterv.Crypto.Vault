@@ -127,6 +127,14 @@ if(NOT EMSCRIPTEN AND NOT ANDROID)
         DESTINATION ${CMAKE_INSTALL_BINDIR}
         COMPONENT QVaultCli
     )
+    
+    qt_generate_deploy_app_script(
+        TARGET QVaultCli
+        OUTPUT_SCRIPT deploy_script_cli
+        NO_UNSUPPORTED_PLATFORM_ERROR
+    )
+    install(SCRIPT ${deploy_script_cli})
+
 endif(NOT EMSCRIPTEN AND NOT ANDROID)
 
 
