@@ -122,6 +122,10 @@ if(NOT EMSCRIPTEN AND NOT ANDROID)
     add_executable(QVaultCli src/QVaultCli.cpp)
     target_link_libraries(QVaultCli PRIVATE vault)
     add_executable(${PROJECT_NAME}::QVaultCli ALIAS QVaultCli)
+    set_target_properties(QVaultCli PROPERTIES
+    WIN32_EXECUTABLE ON
+    MACOSX_BUNDLE ON
+    )
     install(TARGETS QVaultCli
         EXPORT ${PROJECT_NAME}-config
         DESTINATION ${CMAKE_INSTALL_BINDIR}
