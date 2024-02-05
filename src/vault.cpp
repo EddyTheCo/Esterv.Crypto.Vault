@@ -34,7 +34,6 @@ Vault::Vault(QObject *parent,const QString filename):QObject(parent),m_ctx(EVP_C
     m_isEmpty(true)
 {
     readFromFile();
-    connect(this,&Vault::fileChanged,this,&Vault::restart);
     connect(this,&QObject::destroyed,this,[=](){EVP_CIPHER_CTX_free(m_ctx);});
 }
 void Vault::restart()
@@ -43,8 +42,26 @@ void Vault::restart()
     setIsEmpty(true);
     readFromFile();
 }
+bool Vault::checkPassword(QString password)const
+{
+    if(m_isEmpty||password.size()<8) return false;
+
+    auto passHash=QPasswordDigestor::deriveKeyPbkdf2(
+        QCryptographicHash::Sha512,
+        password.toUtf8(),
+        m_iv,
+        NITERATIONS,
+        64);
+    if(passHash==m_passHash)
+    {
+        return true;
+    }
+    return false;
+
+}
 bool Vault::changePassword(QString oldPass,QString newPass)
 {
+
     if(m_isEmpty||newPass.size()<8||oldPass.size()<8) return false;
 
     auto oldPassHash=QPasswordDigestor::deriveKeyPbkdf2(
@@ -62,6 +79,7 @@ bool Vault::changePassword(QString oldPass,QString newPass)
             m_iv,
             NITERATIONS,
             32);
+
         const auto plainText=getContent(oldkey);
         setRandomIV();
         auto newPassHash=QPasswordDigestor::deriveKeyPbkdf2(
@@ -70,14 +88,17 @@ bool Vault::changePassword(QString oldPass,QString newPass)
             m_iv,
             NITERATIONS,
             64);
+
         auto newkey=QPasswordDigestor::deriveKeyPbkdf2(
             QCryptographicHash::Sha256,
             newPass.toUtf8(),
             m_iv,
             NITERATIONS,
             32);
-        setContent(plainText,newkey);
+
         m_passHash=newPassHash;
+        setContent(plainText,newkey);
+
         return true;
     }
     return false;
@@ -151,6 +172,7 @@ if(file.exists()&&file.open(QIODevice::ReadOnly))
 }
 void Vault::setRandomIV()
 {
+    m_iv=QByteArray();
     auto buffer=QDataStream(&m_iv,QIODevice::WriteOnly | QIODevice::Append);
     for(auto i=0;i<4;i++)
     {
@@ -239,6 +261,7 @@ bool Vault::setData(QByteArray plainText,QByteArray password)
             m_iv,
             NITERATIONS,
             32);
+
         return setContent(plainText,key);
     }
     return false;
