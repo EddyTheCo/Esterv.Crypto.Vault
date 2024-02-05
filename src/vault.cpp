@@ -34,7 +34,6 @@ Vault::Vault(QObject *parent,const QString filename):QObject(parent),m_ctx(EVP_C
     m_isEmpty(true)
 {
     readFromFile();
-    connect(this,&Vault::fileChanged,this,&Vault::restart);
     connect(this,&QObject::destroyed,this,[=](){EVP_CIPHER_CTX_free(m_ctx);});
 }
 void Vault::restart()
