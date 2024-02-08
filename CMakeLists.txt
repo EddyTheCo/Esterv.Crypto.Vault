@@ -109,8 +109,8 @@ install(TARGETS vaultplugin
 endif(USE_QML)
 
 
-target_include_directories(vault PUBLIC  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    "$<INSTALL_INTERFACE:/Esterv/${PROJECT_NAME}>")
+target_include_directories(vault PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+                 "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/Esterv/${PROJECT_NAME}>")
 
 target_link_libraries(vault PUBLIC Qt6::Core Qt6::Network OpenSSL::Crypto)
 target_compile_definitions(vault PRIVATE WINDOWS_QVAULT)
@@ -141,15 +141,14 @@ install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/include/
 )
 
 install(EXPORT ${PROJECT_NAME}-config
-    FILE ${PROJECT_NAME}-config.cmake
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Esterv
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
     NAMESPACE ${PROJECT_NAME}::
     COMPONENT ${PROJECT_NAME}
 )
 include(CMakePackageConfigHelpers)
 configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
     "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Esterv
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
 )
 write_basic_package_version_file(
     "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
@@ -159,7 +158,7 @@ write_basic_package_version_file(
 install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Esterv
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
 )
 export(EXPORT ${PROJECT_NAME}-config
     FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
