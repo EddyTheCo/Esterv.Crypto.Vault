@@ -55,22 +55,10 @@ if(NOT OPENSSL_FOUND)
         FetchContent_Populate(openssl)
         message(STATUS "openssl is installed in ${openssl_SOURCE_DIR}")
         set(OPENSSL_FOUND ON)
-        add_library(OpenSSL::Crypto UNKNOWN IMPORTED)
-        set_target_properties(OpenSSL::Crypto PROPERTIES
-            INTERFACE_INCLUDE_DIRECTORIES "${openssl_SOURCE_DIR}/include")
-
-        if(EMSCRIPTEN)
-            set_target_properties(OpenSSL::Crypto PROPERTIES
-                IMPORTED_LINK_INTERFACE_LANGUAGES "C"
-                IMPORTED_LOCATION "${openssl_SOURCE_DIR}/libx32/libcrypto.a")
-        endif(EMSCRIPTEN)
-        if(ANDROID)
-            set_target_properties(OpenSSL::Crypto PROPERTIES
-                IMPORTED_LINK_INTERFACE_LANGUAGES "C"
-                IMPORTED_LOCATION "${openssl_SOURCE_DIR}/lib/libcrypto.a")
-        endif(ANDROID)
     endif(NOT openssl_POPULATED)
-endif(EMSCRIPTEN)
+    include(${openssl_SOURCE_DIR}/openssl.cmake)
+    create_targets()
+endif(EMSCRIPTEN OR ANDROID )
 endif(NOT OPENSSL_FOUND)
 
 if(OPENSSL_FOUND AND TARGET OpenSSL::Crypto AND Qt6_FOUND)
