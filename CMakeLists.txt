@@ -124,7 +124,7 @@ if(OPENSSL_FOUND AND TARGET OpenSSL::Crypto AND Qt6_FOUND)
 			TARGET QVaultCli
 			OUTPUT_SCRIPT deploy_script
 			)
-		install(SCRIPT ${deploy_script} COMPONENT vaultCli)
+		install(SCRIPT ${deploy_script})
 	endif(NOT EMSCRIPTEN AND NOT ANDROID)
 
 
