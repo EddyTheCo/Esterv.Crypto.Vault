@@ -111,7 +111,12 @@ if(OPENSSL_FOUND AND TARGET OpenSSL::Crypto AND Qt6_FOUND)
 		add_executable(QVaultCli src/QVaultCli.cpp)
 		target_link_libraries(QVaultCli PRIVATE vault)
 		add_executable(${PROJECT_NAME}::QVaultCli ALIAS QVaultCli)
+		set_target_properties(QVaultCli PROPERTIES
+			WIN32_EXECUTABLE ON
+			MACOSX_BUNDLE ON
+			)
 		install(TARGETS QVaultCli
+			BUNDLE DESTINATION .
 			RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 			COMPONENT vaultCli
 			)
