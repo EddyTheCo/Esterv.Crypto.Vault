@@ -1,5 +1,7 @@
 # Esterv.Utils.Vault 
 
+[TOC]
+
 This repo implements a C++ class and QML Module for storing encrypted data as a vault. 
 The vault is stored on the local storage of the user.
 I have tested the library on Linux, Android, and the Browser.
