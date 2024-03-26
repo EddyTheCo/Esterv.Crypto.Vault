@@ -39,8 +39,8 @@ include(FetchContent)
 FetchContent_Declare(
 	QtVault	
 	GIT_REPOSITORY https://github.com/EddyTheCo/QVault.git
-	GIT_TAG v0.1.0 
-	FIND_PACKAGE_ARGS 0.1 CONFIG  
+	GIT_TAG vMAJOR.MINOR.PATCH 
+	FIND_PACKAGE_ARGS MAJOR.MINOR CONFIG  
 	)
 FetchContent_MakeAvailable(QtVault)
 
