@@ -6,7 +6,7 @@ include(FetchContent)
 FetchContent_Declare(
 	ccommon
 	GIT_REPOSITORY https://github.com/EddyTheCo/Common.git
-	GIT_TAG use_IFW
+	GIT_TAG v0.3.0
 	)
 FetchContent_MakeAvailable(ccommon)
 version_from_git(
@@ -115,17 +115,15 @@ if(OPENSSL_FOUND AND TARGET OpenSSL::Crypto AND Qt6_FOUND)
 			WIN32_EXECUTABLE ON
 			MACOSX_BUNDLE ON
 			)
-		install(TARGETS QVaultCli
-			BUNDLE DESTINATION .
-			RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-			COMPONENT vaultCli
+		install(TARGETS QVaultCli COMPONENT vaultCli
+			BUNDLE DESTINATION . COMPONENT vaultCli
 			)
 		if(QTDEPLOY)
 			qt_generate_deploy_app_script(
 				TARGET QVaultCli
 				OUTPUT_SCRIPT deploy_script
 				)
-			install(SCRIPT ${deploy_script})
+			install(SCRIPT ${deploy_script} COMPONENT vaultCli)
 		endif(QTDEPLOY)
 	endif(NOT EMSCRIPTEN AND NOT ANDROID)
 
