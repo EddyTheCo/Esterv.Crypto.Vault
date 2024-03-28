@@ -120,11 +120,13 @@ if(OPENSSL_FOUND AND TARGET OpenSSL::Crypto AND Qt6_FOUND)
 			RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 			COMPONENT vaultCli
 			)
-		qt_generate_deploy_app_script(
-			TARGET QVaultCli
-			OUTPUT_SCRIPT deploy_script
-			)
-		install(SCRIPT ${deploy_script})
+		if(QTDEPLOY)
+			qt_generate_deploy_app_script(
+				TARGET QVaultCli
+				OUTPUT_SCRIPT deploy_script
+				)
+			install(SCRIPT ${deploy_script})
+		endif(QTDEPLOY)
 	endif(NOT EMSCRIPTEN AND NOT ANDROID)
 
 
