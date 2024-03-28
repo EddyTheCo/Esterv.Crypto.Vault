@@ -6,7 +6,7 @@ include(FetchContent)
 FetchContent_Declare(
 	ccommon
 	GIT_REPOSITORY https://github.com/EddyTheCo/Common.git
-	GIT_TAG use_IFW
+	GIT_TAG v0.3.0
 	)
 FetchContent_MakeAvailable(ccommon)
 version_from_git(
@@ -63,11 +63,11 @@ endif(NOT OPENSSL_FOUND)
 
 if(OPENSSL_FOUND AND TARGET OpenSSL::Crypto AND Qt6_FOUND)
 	qt_standard_project_setup()
-	add_library(vault include/vault.hpp src/vault.cpp)
-	add_library(${PROJECT_NAME}::vault ALIAS vault)
-	set_target_properties(vault PROPERTIES VERSION ${VERSION} SOVERSION ${VERSION_MAJOR})
+	add_library(qvault include/vault.hpp src/vault.cpp)
+	add_library(${PROJECT_NAME}::qvault ALIAS qvault)
+	set_target_properties(qvault PROPERTIES VERSION ${VERSION} SOVERSION ${VERSION_MAJOR})
 	if(USE_QML)
-		qt6_add_qml_module(vault
+		qt6_add_qml_module(qvault
 			URI  Esterv.Utils.Vault
 			VERSION 1.0
 			RESOURCE_PREFIX
@@ -77,9 +77,9 @@ if(OPENSSL_FOUND AND TARGET OpenSSL::Crypto AND Qt6_FOUND)
 			${CMAKE_BINARY_DIR}/Esterv/Utils/Vault
 			IMPORT_PATH ${CMAKE_BINARY_DIR}
 			)
-		add_library(${PROJECT_NAME}::vaultplugin ALIAS vaultplugin)
-		target_link_libraries(vault PUBLIC Qt6::Gui Qt6::Quick)
-		target_compile_definitions(vault PRIVATE USE_QML)
+		add_library(${PROJECT_NAME}::qvaultplugin ALIAS qvaultplugin)
+		target_link_libraries(qvault PUBLIC Qt6::Gui Qt6::Quick)
+		target_compile_definitions(qvault PRIVATE USE_QML)
 
 		install(TARGETS ${out_targets_var}
 			EXPORT ${PROJECT_NAME}-config
@@ -90,7 +90,7 @@ if(OPENSSL_FOUND AND TARGET OpenSSL::Crypto AND Qt6_FOUND)
 			DESTINATION ${CMAKE_INSTALL_LIBDIR}/Esterv/Utils
 			COMPONENT vault
 			)
-		install(TARGETS vaultplugin
+		install(TARGETS qvaultplugin
 			EXPORT ${PROJECT_NAME}-config
 			DESTINATION ${CMAKE_INSTALL_LIBDIR}/Esterv/Utils/Vault
 			COMPONENT vault
@@ -98,86 +98,52 @@ if(OPENSSL_FOUND AND TARGET OpenSSL::Crypto AND Qt6_FOUND)
 	endif(USE_QML)
 
 
-	target_include_directories(vault PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+	target_include_directories(qvault PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/Esterv/>")
 
-	target_link_libraries(vault PUBLIC Qt6::Core Qt6::Network OpenSSL::Crypto)
-	target_compile_definitions(vault PRIVATE WINDOWS_QVAULT)
+	target_link_libraries(qvault PUBLIC Qt6::Core Qt6::Network OpenSSL::Crypto)
+	target_compile_definitions(qvault PRIVATE WINDOWS_QVAULT)
 	if(EMSCRIPTEN)
-		target_compile_definitions(vault PRIVATE USE_EMSCRIPTEN)
+		target_compile_definitions(qvault PRIVATE USE_EMSCRIPTEN)
 	endif(EMSCRIPTEN)
 
 	if(NOT EMSCRIPTEN AND NOT ANDROID)
 		add_executable(QVaultCli src/QVaultCli.cpp)
-		target_link_libraries(QVaultCli PRIVATE vault)
+		target_link_libraries(QVaultCli PRIVATE qvault)
 		add_executable(${PROJECT_NAME}::QVaultCli ALIAS QVaultCli)
 		set_target_properties(QVaultCli PROPERTIES
 			WIN32_EXECUTABLE ON
 			MACOSX_BUNDLE ON
 			)
-		install(TARGETS QVaultCli
-			BUNDLE DESTINATION .
-			RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-			COMPONENT vaultCli
+		install(TARGETS QVaultCli COMPONENT vaultCli
+			BUNDLE DESTINATION . COMPONENT vaultCli
 			)
-		qt_generate_deploy_app_script(
-			TARGET QVaultCli
-			OUTPUT_SCRIPT deploy_script
-			)
-		install(SCRIPT ${deploy_script})
+		if(QTDEPLOY)
+			qt_generate_deploy_app_script(
+				TARGET QVaultCli
+				OUTPUT_SCRIPT deploy_script
+				)
+			install(SCRIPT ${deploy_script} COMPONENT vaultCli)
+		endif(QTDEPLOY)
 	endif(NOT EMSCRIPTEN AND NOT ANDROID)
 
 
-	install(TARGETS vault
+	install(TARGETS qvault
 		EXPORT ${PROJECT_NAME}-config
 		DESTINATION ${CMAKE_INSTALL_LIBDIR}
 		COMPONENT vault
 		)
-	install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/include/
+	install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
 		DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Esterv
-		COMPONENT vault
-		)
-
-	install(EXPORT ${PROJECT_NAME}-config
-		DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
-		NAMESPACE ${PROJECT_NAME}::
 		COMPONENT ${PROJECT_NAME}
 		)
-	include(CMakePackageConfigHelpers)
-	configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
-		"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-		INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
-		)
-	write_basic_package_version_file(
-		"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-		VERSION ${VERSION}
-		COMPATIBILITY SameMajorVersion
-		)
-	install(FILES
-		${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-		${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-		DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
-		COMPONENT vault
-		)
-	export(EXPORT ${PROJECT_NAME}-config
-		FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
-		)
+	build_exports()
 	if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 		add_subdirectory(examples)
-		set(cpack_file_name "${PROJECT_NAME}-v${SEMVER}-${CMAKE_SYSTEM_NAME}_${CMAKE_SYSTEM_VERSION}-${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_CXX_COMPILER_ID}")
-		if(NOT BUILD_SHARED_LIBS)
-			set(cpack_file_name "${cpack_file_name}-static")
-		endif(NOT BUILD_SHARED_LIBS)
-		set(CPACK_PACKAGE_FILE_NAME ${cpack_file_name})
-		include(CPack)
-		include(CPackIFW)
-		cpack_add_component(vault)
-		cpack_ifw_configure_component(vault LICENSES "License" ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE)
-		cpack_ifw_add_repository("Repo" URL "${REPO_URL}/packages/${CMAKE_SYSTEM_NAME}/" )
+		build_cpack()
 	endif(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
 endif(OPENSSL_FOUND AND TARGET OpenSSL::Crypto AND Qt6_FOUND)
-
 
 if(BUILD_DOCS)
 	build_docs()
