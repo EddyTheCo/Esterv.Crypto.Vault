@@ -1,5 +1,7 @@
 # Esterv.Utils.Vault 
 
+[TOC]
+
 This repo implements a C++ class and QML Module for storing encrypted data as a vault. 
 The vault is stored on the local storage of the user.
 I have tested the library on Linux, Android, and the Browser.
@@ -37,16 +39,16 @@ include(FetchContent)
 FetchContent_Declare(
 	QtVault	
 	GIT_REPOSITORY https://github.com/EddyTheCo/QVault.git
-	GIT_TAG v0.1.0 
-	FIND_PACKAGE_ARGS 0.1 CONFIG  
+	GIT_TAG vMAJOR.MINOR.PATCH 
+	FIND_PACKAGE_ARGS MAJOR.MINOR CONFIG  
 	)
 FetchContent_MakeAvailable(QtVault)
 
-target_link_libraries(<target> <PRIVATE|PUBLIC|INTERFACE> QtVault::vault)
+target_link_libraries(<target> <PRIVATE|PUBLIC|INTERFACE> QtVault::qvault)
 ```
 If you want to use the QML module also add
 ```
-$<$<STREQUAL:$<TARGET_PROPERTY:QtVault::vault,TYPE>,STATIC_LIBRARY>:QtVault::vaultplugin>
+$<$<STREQUAL:$<TARGET_PROPERTY:QtVault::qvault,TYPE>,STATIC_LIBRARY>:QtVault::qvaultplugin>
 ```
 
 ## API reference
