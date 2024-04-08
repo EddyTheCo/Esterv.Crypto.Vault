@@ -21,8 +21,8 @@ if(USE_QML AND BUILD_EXAMPLES)
 			"/esterVtech.com/imports"
 			IMPORT_PATH ${CMAKE_BINARY_DIR}
 			)
-		target_link_libraries(${example} PRIVATE PRIVATE QtVault::vault
-			$<$<STREQUAL:$<TARGET_PROPERTY:QtVault::vault,TYPE>,STATIC_LIBRARY>:QtVault::vaultplugin>
+		target_link_libraries(${example} PRIVATE PRIVATE QtVault::qvault
+			$<$<STREQUAL:$<TARGET_PROPERTY:QtVault::qvault,TYPE>,STATIC_LIBRARY>:QtVault::qvaultplugin>
 			)
 
 		set_target_properties(${example} PROPERTIES
