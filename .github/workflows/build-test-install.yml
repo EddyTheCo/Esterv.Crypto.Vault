@@ -17,7 +17,7 @@ jobs:
     with:
       os: ${{ matrix.os }}
       qtVersion: '6.6.0'
-      cmakeArgs: " -DQTDEPLOY=ON -DCPACK_PACKAGE_CONTACT=estervtech@gmail.com -DREPO_URL=https://eddytheco.github.io/QVault -DCPACK_PACKAGE_VENDOR=estervtech" 
+      cmakeArgs: " -DBUILD_EXAMPLES=ON -DQTDEPLOY=ON -DCPACK_PACKAGE_CONTACT=estervtech@gmail.com -DREPO_URL=https://eddytheco.github.io/QVault -DCPACK_PACKAGE_VENDOR=estervtech" 
       test: false
   
   build_doxygen:
