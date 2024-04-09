@@ -1,7 +1,7 @@
 #include"vault.hpp"
 #include<QCoreApplication>
 #include<QCommandLineParser>
-
+#include <QTextStream>
 
 int main(int argc, char *argv[])
 {
@@ -48,8 +48,9 @@ int main(int argc, char *argv[])
     if(!vault)vault=new qutils::Vault(&app);
     if(getMode)
     {
-        auto data=vault->getData(args.at(0).toUtf8());
-        qDebug()<<data;
+        const auto data=vault->getData(args.at(0).toUtf8());
+        QTextStream out(stdout);
+        out<<data<<"\n";
     }
     else
     {
