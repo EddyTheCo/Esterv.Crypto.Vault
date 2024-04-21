@@ -32,6 +32,7 @@ jobs:
 
       - name: Format code
         run: |
+          rm aqtinstall.log
           find . -regex '.*\.\(cpp\|hpp\|cu\|cuh\|c\|h\)' -exec clang-format -style=file -i {} \;
           find . -regex '.*\.\(qml\)' -exec  qmlformat  -i {} \;
 
