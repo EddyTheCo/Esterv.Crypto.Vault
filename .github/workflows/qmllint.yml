@@ -4,7 +4,6 @@ on:
 
   workflow_run:
     workflows: [push-build-release]
-    branches: [*]
     types:
       - completed
 jobs:
