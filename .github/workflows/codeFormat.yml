@@ -1,5 +1,5 @@
 name: clangFormat
-run-name: Clang Format and PR
+run-name: Format code and do PR
 on:
   pull_request_target:
     types: [closed]
