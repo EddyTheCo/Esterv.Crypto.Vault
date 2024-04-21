@@ -30,5 +30,7 @@ jobs:
         with:
           commit-message: clang formatted code
           branch: clangFormattedCode
-          title: Your friend clang formatter
-          body: ""  
+          signoff: true
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          title: Fixed the format or your nice code 
+          body: Every time you change the format, I am here to undo your changes.
