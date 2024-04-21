@@ -39,9 +39,8 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6.0.4
         with:
-          commit-message: clang formatted code
-          branch: clangFormattedCode
-          signoff: true
+          commit-message: C/C++/QML formatted code
+          branch: formattedCode
           author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           title: Fixed the format of your nice code
           body: Every time you change the format, I am here to fix your mess.
