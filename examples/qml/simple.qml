@@ -1,4 +1,3 @@
-
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -7,117 +6,92 @@ import Esterv.CustomControls
 import Esterv.Utils.Vault
 
 ApplicationWindow {
+    id: window
     visible: true
-    id:window
 
-    background:Rectangle
-    {
-        color:Style.backColor1
+    background: Rectangle {
+        color: Style.backColor1
     }
 
-    Popup
-    {
-        id:pop1
-        property bool isSet:false
+    Popup {
+        id: pop1
+        property bool isSet: false
 
-        visible:false
+        visible: false
         closePolicy: Popup.CloseOnPressOutside
         anchors.centerIn: Overlay.overlay
         onClosed: {
-            pass.text="";
+            pass.text = "";
         }
 
-        ColumnLayout
-        {
-            Label
-            {
-                text: qsTr(((vault.isEmpty)?"Set":"Enter")+" the password:")
+        ColumnLayout {
+            Label {
+                text: qsTr(((vault.isEmpty) ? "Set" : "Enter") + " the password:")
             }
-            TextField
-            {
-                id:pass
+            TextField {
+                id: pass
                 Layout.fillWidth: true
-                echoMode:TextInput.PasswordEchoOnEdit
+                echoMode: TextInput.PasswordEchoOnEdit
                 ToolTip.text: qsTr("Wrong password")
                 ToolTip.visible: false
             }
 
-            Button
-            {
-                text:qsTr("ok")
-                enabled: pass.text.length>8
-                onClicked:
-                {
-                    if(pop1.isSet)
-                    {
-                        if(!vault.setDataString(setdata.text,pass.text))
-                        {
-                            pass.ToolTip.show(qsTr("Wrong password"),5000);
-                        }
-                        else
-                        {
+            Button {
+                text: qsTr("ok")
+                enabled: pass.text.length > 8
+                onClicked: {
+                    if (pop1.isSet) {
+                        if (!vault.setDataString(setdata.text, pass.text)) {
+                            pass.ToolTip.show(qsTr("Wrong password"), 5000);
+                        } else {
                             pop1.close();
                         }
-                    }
-                    else
-                    {
-                        getdata.text=vault.getDataString(pass.text);
+                    } else {
+                        getdata.text = vault.getDataString(pass.text);
                         pop1.close();
                     }
-
                 }
                 Layout.alignment: Qt.AlignRight || Qt.AlignBottom
             }
         }
     }
-    Popup
-    {
-        id:pop2
-        visible:false
+    Popup {
+        id: pop2
+        visible: false
         closePolicy: Popup.CloseOnPressOutside
         anchors.centerIn: Overlay.overlay
 
         onClosed: {
-            oldpass.text="";
-            newpass.text="";
+            oldpass.text = "";
+            newpass.text = "";
         }
 
-        ColumnLayout
-        {
-            Label
-            {
+        ColumnLayout {
+            Label {
                 text: qsTr("Enter the vault password:")
             }
-            TextField
-            {
-                id:oldpass
+            TextField {
+                id: oldpass
                 Layout.fillWidth: true
-                echoMode:TextInput.PasswordEchoOnEdit
+                echoMode: TextInput.PasswordEchoOnEdit
             }
-            Label
-            {
+            Label {
                 text: qsTr("Set the vault password:")
             }
-            TextField
-            {
-                id:newpass
+            TextField {
+                id: newpass
                 Layout.fillWidth: true
-                echoMode:TextInput.PasswordEchoOnEdit
+                echoMode: TextInput.PasswordEchoOnEdit
             }
 
-            Button
-            {
-                text:qsTr("ok")
-                enabled: (newpass.text.length>8)&&(oldpass.text.length>8)
-                onClicked:
-                {
-                    if(vault.changePassword(oldpass.text,newpass.text))
-                    {
+            Button {
+                text: qsTr("ok")
+                enabled: (newpass.text.length > 8) && (oldpass.text.length > 8)
+                onClicked: {
+                    if (vault.changePassword(oldpass.text, newpass.text)) {
                         pop2.close();
-                    }
-                    else
-                    {
-                        oldpass.ToolTip.show(qsTr("Wrong password"),5000);
+                    } else {
+                        oldpass.ToolTip.show(qsTr("Wrong password"), 5000);
                     }
                 }
                 Layout.alignment: Qt.AlignRight || Qt.AlignBottom
@@ -125,55 +99,46 @@ ApplicationWindow {
         }
     }
 
-
-    Vault
-    {
-        id:vault
+    Vault {
+        id: vault
     }
-    ThemeSwitch
-    {
-        id:themeswitch
+    ThemeSwitch {
+        id: themeswitch
     }
 
-    ColumnLayout
-    {
+    ColumnLayout {
         width: parent.width
-        height:parent.height-themeswitch.height
+        height: parent.height - themeswitch.height
         anchors.top: themeswitch.bottom
-        spacing:30
-        RowLayout
-        {
+        spacing: 30
+        RowLayout {
             Layout.alignment: Qt.AlignHCenter || Qt.AlignTop
-            Label
-            {
-                text:qsTr("The vault is "+((vault.isEmpty)?"":"not")+" empty")
+            Label {
+                text: qsTr("The vault is " + ((vault.isEmpty) ? "" : "not") + " empty")
             }
-            Button{
-                id:changepass
+            Button {
+                id: changepass
                 Layout.margins: 5
-                text:qsTr("Change password")
-                visible:!vault.isEmpty
-                onClicked:
-                {
+                text: qsTr("Change password")
+                visible: !vault.isEmpty
+                onClicked: {
                     pop2.open();
                 }
             }
         }
 
-        GridLayout
-        {
+        GridLayout {
 
-            flow: (parent.width<600)?GridLayout.TopToBottom:GridLayout.LeftToRight
-            columns:2
+            flow: (parent.width < 600) ? GridLayout.TopToBottom : GridLayout.LeftToRight
+            columns: 2
             Layout.fillHeight: true
             Layout.fillWidth: true
             Layout.margins: 40
             columnSpacing: 30
-            rowSpacing:30
+            rowSpacing: 30
             Layout.alignment: Qt.AlignCenter
-            Rectangle
-            {
-                color:Style.backColor2
+            Rectangle {
+                color: Style.backColor2
                 Layout.minimumHeight: 200
                 Layout.maximumHeight: 300
                 Layout.minimumWidth: 300
@@ -181,40 +146,33 @@ ApplicationWindow {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignCenter
-                ColumnLayout
-                {
-                    anchors.fill:parent
-                    Label
-                    {
+                ColumnLayout {
+                    anchors.fill: parent
+                    Label {
                         text: qsTr("Set the data:")
                         Layout.margins: 5
                     }
-                    TextArea
-                    {
-                        id:setdata
+                    TextArea {
+                        id: setdata
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         Layout.maximumWidth: 300
                         Layout.maximumHeight: 200
                         Layout.alignment: Qt.AlignCenter
                     }
-                    Button
-                    {
-                        text:qsTr("Save")
+                    Button {
+                        text: qsTr("Save")
                         Layout.margins: 5
-                        onClicked:
-                        {
-                            pop1.isSet=true;
+                        onClicked: {
+                            pop1.isSet = true;
                             pop1.open();
                         }
                         Layout.alignment: Qt.AlignRight || Qt.AlignBottom
                     }
-
                 }
             }
-            Rectangle
-            {
-                color:Style.backColor2
+            Rectangle {
+                color: Style.backColor2
                 Layout.minimumHeight: 200
                 Layout.maximumHeight: 300
                 Layout.minimumWidth: 300
@@ -222,50 +180,33 @@ ApplicationWindow {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignCenter
-                ColumnLayout
-                {
-                    anchors.fill:parent
-                    Label
-                    {
+                ColumnLayout {
+                    anchors.fill: parent
+                    Label {
                         Layout.margins: 5
                         text: qsTr("data:")
                     }
-                    TextArea
-                    {
-                        id:getdata
+                    TextArea {
+                        id: getdata
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         Layout.maximumWidth: 300
                         Layout.maximumHeight: 200
                         Layout.alignment: Qt.AlignCenter
-                        readOnly:true
+                        readOnly: true
                     }
 
-                    Button
-                    {
-                        text:qsTr("Retrieve")
+                    Button {
+                        text: qsTr("Retrieve")
                         Layout.margins: 5
-                        onClicked:
-                        {
-                            pop1.isSet=false;
+                        onClicked: {
+                            pop1.isSet = false;
                             pop1.open();
                         }
                         Layout.alignment: Qt.AlignRight || Qt.AlignBottom
                     }
-
-
                 }
             }
         }
-
-
-
-
     }
-
-
-
-
-
-
 }
