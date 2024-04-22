@@ -1,4 +1,4 @@
-name: clangFormat
+name: codeFormat
 run-name: Format code and do PR
 on:
   pull_request_target:
