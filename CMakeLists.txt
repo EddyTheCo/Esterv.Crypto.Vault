@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.24)
 option(USE_QML "Create QML types and modules" ON)
 include(${CMAKE_CURRENT_BINARY_DIR}/local_conf.cmake OPTIONAL)
-
+include(InstallRequiredSystemLibraries)
 include(FetchContent)
 FetchContent_Declare(
 	ccommon
@@ -85,6 +85,7 @@ if(OPENSSL_FOUND AND TARGET OpenSSL::Crypto AND Qt6_FOUND)
 			EXPORT ${PROJECT_NAME}-config
 			DESTINATION ${CMAKE_INSTALL_LIBDIR}
 			COMPONENT vault
+			RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}" COMPONENT vault
 			)
 		install(DIRECTORY ${CMAKE_BINARY_DIR}/Esterv/Utils/Vault
 			DESTINATION ${CMAKE_INSTALL_LIBDIR}/Esterv/Utils
@@ -94,6 +95,7 @@ if(OPENSSL_FOUND AND TARGET OpenSSL::Crypto AND Qt6_FOUND)
 			EXPORT ${PROJECT_NAME}-config
 			DESTINATION ${CMAKE_INSTALL_LIBDIR}/Esterv/Utils/Vault
 			COMPONENT vault
+			RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}" COMPONENT vault
 			)
 	endif(USE_QML)
 
@@ -132,6 +134,7 @@ if(OPENSSL_FOUND AND TARGET OpenSSL::Crypto AND Qt6_FOUND)
 		EXPORT ${PROJECT_NAME}-config
 		DESTINATION ${CMAKE_INSTALL_LIBDIR}
 		COMPONENT vault
+		RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}" COMPONENT vault
 		)
 	install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
 		DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Esterv
