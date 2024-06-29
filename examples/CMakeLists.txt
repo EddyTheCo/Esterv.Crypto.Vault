@@ -34,7 +34,8 @@ if(USE_QML AND BUILD_EXAMPLES)
     set_target_properties(${example} PROPERTIES WIN32_EXECUTABLE ON
                                                 MACOSX_BUNDLE ON)
     install(
-      TARGETS ${example} COMPONENT ${PROJECT_NAME}-examples
+      TARGETS ${example}
+      COMPONENT ${PROJECT_NAME}-examples
       BUNDLE DESTINATION . COMPONENT ${PROJECT_NAME}-examples
       LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
     if(QTDEPLOY)
