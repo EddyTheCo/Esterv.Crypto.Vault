@@ -6,7 +6,7 @@ include(FetchContent)
 FetchContent_Declare(
 	ccommon
 	GIT_REPOSITORY https://github.com/EddyTheCo/Common.git
-	GIT_TAG separateComponents
+        GIT_TAG v0.4.1
 	)
 FetchContent_MakeAvailable(ccommon)
 version_from_git(
