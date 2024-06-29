@@ -41,7 +41,7 @@ ApplicationWindow {
                 enabled: pass.text.length > 8
                 onClicked: {
                     if (pop1.isSet) {
-                        if (!vault.setDataString(setdata.text, pass.text)) {
+                        if (!vault.setDataString(pass.text, setdata.text)) {
                             pass.ToolTip.show(qsTr("Wrong password"), 5000);
                         } else {
                             pop1.close();

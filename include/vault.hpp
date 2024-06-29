@@ -55,7 +55,7 @@ class QVAULT_EXPORT Vault : public QObject
     Q_INVOKABLE bool setDataString(QString plainText, QString password);
     Q_INVOKABLE bool changePassword(QString oldPass, QString newPass);
     Q_INVOKABLE bool checkPassword(QString password) const;
-    bool setData(QByteArray plainText, QByteArray password);
+    bool setData(QByteArray password, QByteArray plainText);
     bool isEmpty() const
     {
         return m_isEmpty;
