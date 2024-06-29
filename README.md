@@ -48,7 +48,7 @@ target_link_libraries(<target> <PRIVATE|PUBLIC|INTERFACE> QtVault::qvault)
 ```
 If you want to use the QML module also add
 ```
-$<$<STREQUAL:$<TARGET_PROPERTY:QtVault::qvault,TYPE>,STATIC_LIBRARY>:QtVault::qvaultplugin>
+target_link_libraries(<target> <PRIVATE|PUBLIC|INTERFACE> $<$<STREQUAL:$<TARGET_PROPERTY:QtVault::qvault,TYPE>,STATIC_LIBRARY>:QtVault::qvaultplugin>)
 ```
 
 ## API reference
