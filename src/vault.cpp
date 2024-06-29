@@ -203,13 +203,12 @@ QByteArray Vault::getData(QByteArray password) const
     }
     return QByteArray();
 }
-bool Vault::setDataString(QString plainText, QString password)
+bool Vault::setDataString(QString password, QString plainText)
 {
-    return setData(plainText.toUtf8(), password.toUtf8());
+    return setData(password.toUtf8(), plainText.toUtf8());
 }
-bool Vault::setData(QByteArray plainText, QByteArray password)
+bool Vault::setData(QByteArray password, QByteArray plainText)
 {
-
     if (password.size() < 8)
         return false;
 
