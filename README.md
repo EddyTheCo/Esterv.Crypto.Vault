@@ -1,4 +1,4 @@
-# Esterv.Utils.Vault 
+# Esterv.Crypto.Vault
 
 [TOC]
 
@@ -11,52 +11,35 @@ I have tested the library on Linux, Android, and the Browser.
 The repo depends on [Qt](https://doc.qt.io/) and [openssl](https://www.openssl.org/) libraries.
 For the case of Android and Browser, openssl binaries will be downloaded from the releases of my [action](https://github.com/EddyTheCo/install-openssl-action).
 
-## Installing the library 
-
-### From source code
-```
-git clone https://github.com/EddyTheCo/QVault.git
-
-mkdir build
-cd build
-qt-cmake -G Ninja -DCMAKE_INSTALL_PREFIX=installDir -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DQTDEPLOY=OFF -DUSE_QML=OFF -DBUILD_DOCS=OFF ../QVault
-
-cmake --build . 
-
-cmake --install . 
-```
-where `installDir` is the installation path, `QTDEPLOY` install the examples and Qt dependencies using the 
-[cmake-deployment-api](https://www.qt.io/blog/cmake-deployment-api). Setting the `USE_QML` variable produce or not the QML module.
-One can choose to build the examples and the documentation with the `BUILD_EXAMPLES` and `BUILD_DOCS` variables.
-
-### From GitHub releases
-Download the releases from this repo. 
+## Configure, build, test, package ...
+ 
+The project uses [CMake presets](https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html) as a way to share CMake configurations.
+Refer to [cmake](https://cmake.org/cmake/help/latest/manual/cmake.1.html), [ctest](https://cmake.org/cmake/help/latest/manual/ctest.1.html) and [cpack](https://cmake.org/cmake/help/latest/manual/cpack.1.html) documentation for more information on the use of presets.
 
 ## Adding the libraries to your CMake project 
 
 ```CMake
 include(FetchContent)
 FetchContent_Declare(
-	QtVault	
-	GIT_REPOSITORY https://github.com/EddyTheCo/QVault.git
+	EstervVault
+	GIT_REPOSITORY https://github.com/EddyTheCo/Esterv.Crypto.Vault.git
 	GIT_TAG vMAJOR.MINOR.PATCH 
 	FIND_PACKAGE_ARGS MAJOR.MINOR CONFIG  
 	)
-FetchContent_MakeAvailable(QtVault)
+FetchContent_MakeAvailable(EstervVault)
 
-target_link_libraries(<target> <PRIVATE|PUBLIC|INTERFACE> QtVault::qvault)
+target_link_libraries(<target> <PRIVATE|PUBLIC|INTERFACE> Esterv::vault)
 ```
 If you want to use the QML module also add
 ```
-target_link_libraries(<target> <PRIVATE|PUBLIC|INTERFACE> $<$<STREQUAL:$<TARGET_PROPERTY:QtVault::qvault,TYPE>,STATIC_LIBRARY>:QtVault::qvaultplugin>)
+target_link_libraries(<target> <PRIVATE|PUBLIC|INTERFACE> $<$<STREQUAL:$<TARGET_PROPERTY:Esterv::vault,TYPE>,STATIC_LIBRARY>:Esterv::vaultplugin>)
 ```
 
 ## API reference
 
-You can read the [API reference](https://eddytheco.github.io/QVault/), or generate it yourself like
+You can read the [API reference](https://eddytheco.github.io/Esterv.Crypto.Vault/), or generate it yourself like
 ```
-cmake -DBUILD_DOCS=ON ../
-cmake --build . --target doxygen_docs
+cmake --workflow --preset default-documentation
 ```
 
 ## Using the QML modules
@@ -77,7 +60,6 @@ One can also play with the types [here](https://eddytheco.github.io/qmlonline/?e
 ## Contributing
 
 We appreciate any contribution!
-
 
 You can open an issue or request a feature.
 You can open a PR to the `develop` branch and the CI/CD will take care of the rest.
