@@ -24,7 +24,7 @@ EM_JS(char *, readFromLS, (const char *name), {
 
 #endif
 
-namespace qutils
+namespace Esterv::Crypto
 {
 
 Vault::Vault(QObject *parent, const QString filename)
