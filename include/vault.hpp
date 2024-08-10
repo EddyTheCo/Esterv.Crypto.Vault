@@ -14,13 +14,13 @@
 #include <QtQml>
 #endif
 
-#if defined(WINDOWS_QVAULT)
+#if defined(WINDOWS_VAULT)
 #define QVAULT_EXPORT Q_DECL_EXPORT
 #else
 #define QVAULT_EXPORT Q_DECL_IMPORT
 #endif
 
-namespace qutils
+namespace Esterv::Crypto
 {
 
 class QVAULT_EXPORT Vault : public QObject
