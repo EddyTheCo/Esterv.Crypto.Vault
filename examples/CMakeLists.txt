@@ -1,10 +1,4 @@
 if(USE_QML AND BUILD_EXAMPLES)
-  FetchContent_Declare(
-    EstervDesigns
-    GIT_REPOSITORY https://github.com/EddyTheCo/Esterv.Designs.git
-    GIT_TAG v1.2.1
-    FIND_PACKAGE_ARGS 1.2 COMPONENTS FlatControl CONFIG)
-  FetchContent_MakeAvailable(EstervDesigns)
   if(EMSCRIPTEN OR ANDROID)
     find_package(Qt6 REQUIRED COMPONENTS QuickControls2)
   endif(EMSCRIPTEN OR ANDROID)
@@ -58,6 +52,12 @@ if(USE_QML AND BUILD_EXAMPLES)
 
     endif(ANDROID)
     if(EMSCRIPTEN OR ANDROID)
+    FetchContent_Declare(
+    EstervDesigns
+    GIT_REPOSITORY https://github.com/EddyTheCo/Esterv.Designs.git
+    GIT_TAG develop
+    FIND_PACKAGE_ARGS 1.2 COMPONENTS FlatControl CONFIG)
+  FetchContent_MakeAvailable(EstervDesigns)
       target_link_libraries(
         ${example}
         PRIVATE
