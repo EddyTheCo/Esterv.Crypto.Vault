@@ -5,6 +5,7 @@
 
 int main(int argc, char *argv[])
 {
+    using namespace Esterv::Crypto;
     QCoreApplication app(argc, argv);
     QCoreApplication::setApplicationName("VaultCli");
 
@@ -48,17 +49,17 @@ int main(int argc, char *argv[])
     if (getMode && (args.size() < 1 || args.size() > 2))
         parser.showHelp();
 
-    qutils::Vault *vault = nullptr;
+    Vault *vault = nullptr;
     if (getMode && args.size() > 1)
     {
-        vault = new qutils::Vault(&app, args.at(1));
+        vault = new Vault(&app, args.at(1));
     }
     if (setMode && args.size() > 2)
     {
-        vault = new qutils::Vault(&app, args.at(2));
+        vault = new Vault(&app, args.at(2));
     }
     if (!vault)
-        vault = new qutils::Vault(&app);
+        vault = new Vault(&app);
     if (getMode)
     {
         const auto data = vault->getData(args.at(0).toUtf8());
