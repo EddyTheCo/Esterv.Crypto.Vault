@@ -10,7 +10,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(ccommon)
 version_from_git(LOG OFF TIMESTAMP "%Y%m%d%H%M%S")
 project(
-  QtVault
+	EstervVault
   VERSION ${VERSION}
   DESCRIPTION "Store encrypted data on the local system"
   LANGUAGES CXX)
@@ -69,15 +69,15 @@ if(OPENSSL_FOUND
    AND TARGET OpenSSL::Crypto
    AND Qt6_FOUND)
   qt_standard_project_setup()
-  add_library(qvault include/vault.hpp src/vault.cpp)
-  add_library(${PROJECT_NAME}::qvault ALIAS qvault)
-  set_target_properties(qvault PROPERTIES VERSION ${VERSION} SOVERSION
+  add_library(vault include/vault.hpp src/vault.cpp)
+  add_library(Esterv::vault ALIAS vault)
+  set_target_properties(vault PROPERTIES VERSION ${VERSION} SOVERSION
                                                              ${VERSION_MAJOR})
   if(USE_QML)
     qt6_add_qml_module(
-      qvault
+      vault
       URI
-      Esterv.Utils.Vault
+      Esterv.Crypto.Vault
       VERSION
       1.0
       RESOURCE_PREFIX
@@ -85,12 +85,12 @@ if(OPENSSL_FOUND
       OUTPUT_TARGETS
       out_targets_var
       OUTPUT_DIRECTORY
-      ${CMAKE_BINARY_DIR}/Esterv/Utils/Vault
+      ${CMAKE_BINARY_DIR}/Esterv/Crypto/Vault
       IMPORT_PATH
       ${CMAKE_BINARY_DIR})
-    add_library(${PROJECT_NAME}::qvaultplugin ALIAS qvaultplugin)
-    target_link_libraries(qvault PUBLIC Qt6::Gui Qt6::Quick)
-    target_compile_definitions(qvault PRIVATE USE_QML)
+    add_library(Esterv::vaultplugin ALIAS vaultplugin)
+    target_link_libraries(vault PUBLIC Qt6::Gui Qt6::Quick)
+    target_compile_definitions(vault PRIVATE USE_QML)
 
     install(
       TARGETS ${out_targets_var}
@@ -100,47 +100,47 @@ if(OPENSSL_FOUND
       RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
               COMPONENT ${PROJECT_NAME}-qml)
     install(
-      DIRECTORY ${CMAKE_BINARY_DIR}/Esterv/Utils/Vault
-      DESTINATION ${CMAKE_INSTALL_LIBDIR}/Esterv/Utils
+	    DIRECTORY ${CMAKE_BINARY_DIR}/Esterv/Crypto/Vault
+	    DESTINATION ${CMAKE_INSTALL_LIBDIR}/Esterv/Crypto
       COMPONENT ${PROJECT_NAME}-qml)
     install(
-      TARGETS qvaultplugin
+      TARGETS vaultplugin
       EXPORT ${PROJECT_NAME}-config
-      DESTINATION ${CMAKE_INSTALL_LIBDIR}/Esterv/Utils/Vault
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}/Esterv/Crypto/Vault
       COMPONENT ${PROJECT_NAME}-qml
       RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
               COMPONENT ${PROJECT_NAME}-qml)
   endif(USE_QML)
 
   target_include_directories(
-    qvault PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    vault PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
                   "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/Esterv/>")
 
-  target_link_libraries(qvault PUBLIC Qt6::Core Qt6::Network OpenSSL::Crypto)
-  target_compile_definitions(qvault PRIVATE WINDOWS_QVAULT)
+  target_link_libraries(vault PUBLIC Qt6::Core Qt6::Network OpenSSL::Crypto)
+  target_compile_definitions(vault PRIVATE WINDOWS_VAULT)
   if(EMSCRIPTEN)
-    target_compile_definitions(qvault PRIVATE USE_EMSCRIPTEN)
+    target_compile_definitions(vault PRIVATE USE_EMSCRIPTEN)
   endif(EMSCRIPTEN)
 
   if(NOT EMSCRIPTEN AND NOT ANDROID)
-    add_executable(QVaultCli src/QVaultCli.cpp)
-    target_link_libraries(QVaultCli PRIVATE qvault)
-    add_executable(${PROJECT_NAME}::QVaultCli ALIAS QVaultCli)
-    set_target_properties(QVaultCli PROPERTIES WIN32_EXECUTABLE ON MACOSX_BUNDLE
+    add_executable(vaultCli src/vaultCli.cpp)
+    target_link_libraries(vaultCli PRIVATE vault)
+    set_target_properties(vaultCli PROPERTIES WIN32_EXECUTABLE ON MACOSX_BUNDLE
                                                                    ON)
     install(
-      TARGETS QVaultCli
+      TARGETS vaultCli
+    EXPORT ${PROJECT_NAME}-config
       COMPONENT ${PROJECT_NAME}-cli
       BUNDLE DESTINATION . COMPONENT ${PROJECT_NAME}-cli)
     if(QTDEPLOY)
-      qt_generate_deploy_app_script(TARGET QVaultCli OUTPUT_SCRIPT
+      qt_generate_deploy_app_script(TARGET vaultCli OUTPUT_SCRIPT
                                     deploy_script)
       install(SCRIPT ${deploy_script} COMPONENT ${PROJECT_NAME}-cli)
     endif(QTDEPLOY)
   endif(NOT EMSCRIPTEN AND NOT ANDROID)
 
   install(
-    TARGETS qvault
+    TARGETS vault
     EXPORT ${PROJECT_NAME}-config
     DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT ${PROJECT_NAME}

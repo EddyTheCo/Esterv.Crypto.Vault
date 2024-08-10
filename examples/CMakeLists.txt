@@ -1,10 +1,4 @@
 if(USE_QML AND BUILD_EXAMPLES)
-  FetchContent_Declare(
-    EstervDesigns
-    GIT_REPOSITORY https://github.com/EddyTheCo/MyDesigns.git
-    GIT_TAG v1.2.1
-    FIND_PACKAGE_ARGS 1.2 COMPONENTS FlatControl CONFIG)
-  FetchContent_MakeAvailable(EstervDesigns)
   if(EMSCRIPTEN OR ANDROID)
     find_package(Qt6 REQUIRED COMPONENTS QuickControls2)
   endif(EMSCRIPTEN OR ANDROID)
@@ -26,9 +20,8 @@ if(USE_QML AND BUILD_EXAMPLES)
     target_link_libraries(
       ${example}
       PRIVATE
-      PRIVATE
-        QtVault::qvault
-        $<$<STREQUAL:$<TARGET_PROPERTY:QtVault::qvault,TYPE>,STATIC_LIBRARY>:QtVault::qvaultplugin>
+      vault
+      $<$<STREQUAL:$<TARGET_PROPERTY:vault,TYPE>,STATIC_LIBRARY>:vaultplugin>
     )
 
     set_target_properties(${example} PROPERTIES WIN32_EXECUTABLE ON
@@ -59,12 +52,18 @@ if(USE_QML AND BUILD_EXAMPLES)
 
     endif(ANDROID)
     if(EMSCRIPTEN OR ANDROID)
+    FetchContent_Declare(
+    EstervDesigns
+    GIT_REPOSITORY https://github.com/EddyTheCo/Esterv.Designs.git
+    GIT_TAG develop
+    FIND_PACKAGE_ARGS 1.2 COMPONENTS FlatControl CONFIG)
+  FetchContent_MakeAvailable(EstervDesigns)
       target_link_libraries(
         ${example}
         PRIVATE
-          EstervDesigns::FlatControl
+          Esterv::FlatControl
           Qt6::QuickControls2
-          $<$<STREQUAL:$<TARGET_PROPERTY:EstervDesigns::FlatControl,TYPE>,STATIC_LIBRARY>:EstervDesigns::FlatControlplugin>
+          $<$<STREQUAL:$<TARGET_PROPERTY:Esterv::FlatControl,TYPE>,STATIC_LIBRARY>:Esterv::FlatControlplugin>
       )
       target_compile_definitions(${example}
                                  PRIVATE FORCE_STYLE="Esterv.Controls.Flat")
