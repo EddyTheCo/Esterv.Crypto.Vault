@@ -26,8 +26,8 @@ if(USE_QML AND BUILD_EXAMPLES)
     target_link_libraries(
       ${example}
       PRIVATE
-      Esterv::vault
-      $<$<STREQUAL:$<TARGET_PROPERTY:EstervVault::vault,TYPE>,STATIC_LIBRARY>:Esterv::vaultplugin>
+      vault
+      $<$<STREQUAL:$<TARGET_PROPERTY:vault,TYPE>,STATIC_LIBRARY>:vaultplugin>
     )
 
     set_target_properties(${example} PROPERTIES WIN32_EXECUTABLE ON
