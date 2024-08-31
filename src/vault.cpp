@@ -247,4 +247,4 @@ QByteArray Vault::getContent(QByteArray key) const
     plainText.resize(plaintext_len);
     return plainText;
 }
-} // namespace qutils
+} // namespace Esterv::Crypto

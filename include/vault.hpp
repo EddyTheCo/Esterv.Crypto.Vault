@@ -88,4 +88,4 @@ class QVAULT_EXPORT Vault : public QObject
     EVP_CIPHER_CTX *m_ctx;
     bool m_isEmpty;
 };
-} // namespace qutils
+} // namespace Esterv::Crypto

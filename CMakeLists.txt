@@ -10,7 +10,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(ccommon)
 version_from_git(LOG OFF TIMESTAMP "%Y%m%d%H%M%S")
 project(
-	EstervVault
+  EstervVault
   VERSION ${VERSION}
   DESCRIPTION "Store encrypted data on the local system"
   LANGUAGES CXX)
@@ -72,7 +72,7 @@ if(OPENSSL_FOUND
   add_library(vault include/vault.hpp src/vault.cpp)
   add_library(Esterv::vault ALIAS vault)
   set_target_properties(vault PROPERTIES VERSION ${VERSION} SOVERSION
-                                                             ${VERSION_MAJOR})
+                                                            ${VERSION_MAJOR})
   if(USE_QML)
     qt6_add_qml_module(
       vault
@@ -100,8 +100,8 @@ if(OPENSSL_FOUND
       RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
               COMPONENT ${PROJECT_NAME}-qml)
     install(
-	    DIRECTORY ${CMAKE_BINARY_DIR}/Esterv/Crypto/Vault
-	    DESTINATION ${CMAKE_INSTALL_LIBDIR}/Esterv/Crypto
+      DIRECTORY ${CMAKE_BINARY_DIR}/Esterv/Crypto/Vault
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}/Esterv/Crypto
       COMPONENT ${PROJECT_NAME}-qml)
     install(
       TARGETS vaultplugin
@@ -114,7 +114,7 @@ if(OPENSSL_FOUND
 
   target_include_directories(
     vault PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/Esterv/>")
+                 "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/Esterv/>")
 
   target_link_libraries(vault PUBLIC Qt6::Core Qt6::Network OpenSSL::Crypto)
   target_compile_definitions(vault PRIVATE WINDOWS_VAULT)
@@ -126,15 +126,14 @@ if(OPENSSL_FOUND
     add_executable(vaultCli src/vaultCli.cpp)
     target_link_libraries(vaultCli PRIVATE vault)
     set_target_properties(vaultCli PROPERTIES WIN32_EXECUTABLE ON MACOSX_BUNDLE
-                                                                   ON)
+                                                                  ON)
     install(
       TARGETS vaultCli
-    EXPORT ${PROJECT_NAME}-config
+      EXPORT ${PROJECT_NAME}-config
       COMPONENT ${PROJECT_NAME}-cli
       BUNDLE DESTINATION . COMPONENT ${PROJECT_NAME}-cli)
     if(QTDEPLOY)
-      qt_generate_deploy_app_script(TARGET vaultCli OUTPUT_SCRIPT
-                                    deploy_script)
+      qt_generate_deploy_app_script(TARGET vaultCli OUTPUT_SCRIPT deploy_script)
       install(SCRIPT ${deploy_script} COMPONENT ${PROJECT_NAME}-cli)
     endif(QTDEPLOY)
   endif(NOT EMSCRIPTEN AND NOT ANDROID)
