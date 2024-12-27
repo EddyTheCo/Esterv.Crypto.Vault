@@ -1,4 +1,4 @@
-#include "vault.hpp"
+#include "esterv/crypto/vault.hpp"
 #include <QCommandLineParser>
 #include <QCoreApplication>
 #include <QTextStream>
@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
                                  QCoreApplication::translate("main", "data to store on the vault. Only with -s mode"));
 
     QString fileHelp = "[optional] file path to the vault.\n default:" +
-                       (QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/qvault.bin");
+                       (QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/estervvault.bin");
     parser.addPositionalArgument("file", QCoreApplication::translate("main", fileHelp.toLocal8Bit().constData()));
 
     QCommandLineOption getO(QStringList() << "g"

@@ -1,14 +1,20 @@
 cmake_minimum_required(VERSION 3.24)
+
 option(USE_QML "Create QML types and modules" ON)
+option(BUILD_EXAMPLES "Build the examples" ON)
+option(QTDEPLOY "Deploy Qt dependencies for examples" ON)
+option(BUILD_DOCS "Build documentation" ON)
+
 include(${CMAKE_CURRENT_BINARY_DIR}/local_conf.cmake OPTIONAL)
-include(InstallRequiredSystemLibraries)
+
 include(FetchContent)
 FetchContent_Declare(
   ccommon
   GIT_REPOSITORY https://github.com/EddyTheCo/Common.git
-  GIT_TAG v0.4.1)
+  GIT_TAG v0.5.0)
 FetchContent_MakeAvailable(ccommon)
 version_from_git(LOG OFF TIMESTAMP "%Y%m%d%H%M%S")
+
 project(
   EstervVault
   VERSION ${VERSION}
@@ -21,6 +27,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 include(GNUInstallDirs)
+include(InstallRequiredSystemLibraries)
 
 if(USE_QML)
   find_package(Qt6 COMPONENTS Core Gui Quick Core Network)
@@ -69,7 +76,8 @@ if(OPENSSL_FOUND
    AND TARGET OpenSSL::Crypto
    AND Qt6_FOUND)
   qt_standard_project_setup()
-  add_library(vault include/vault.hpp src/vault.cpp)
+
+  add_library(vault include/esterv/crypto/vault.hpp src/vault.cpp)
   add_library(Esterv::vault ALIAS vault)
   set_target_properties(vault PROPERTIES VERSION ${VERSION} SOVERSION
                                                             ${VERSION_MAJOR})
@@ -91,6 +99,8 @@ if(OPENSSL_FOUND
     add_library(Esterv::vaultplugin ALIAS vaultplugin)
     target_link_libraries(vault PUBLIC Qt6::Gui Qt6::Quick)
     target_compile_definitions(vault PRIVATE USE_QML)
+    target_include_directories(
+                   vault PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/esterv/crypto)
 
     install(
       TARGETS ${out_targets_var}
@@ -114,7 +124,8 @@ if(OPENSSL_FOUND
 
   target_include_directories(
     vault PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-                 "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/Esterv/>")
+                 "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
+
 
   target_link_libraries(vault PUBLIC Qt6::Core Qt6::Network OpenSSL::Crypto)
   target_compile_definitions(vault PRIVATE WINDOWS_VAULT)

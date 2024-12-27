@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Esterv.Styles.Simple
 import Esterv.CustomControls
-import Esterv.Utils.Vault
+import Esterv.Crypto.Vault
 
 ApplicationWindow {
     id: window

@@ -38,7 +38,7 @@ class QVAULT_EXPORT Vault : public QObject
                                          "vault"
 #else
                                          (QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) +
-                                          "/qvault.bin")
+                                          "/estervvault.bin")
 #endif
     );
     Q_INVOKABLE QString getDataString(QString password) const;
