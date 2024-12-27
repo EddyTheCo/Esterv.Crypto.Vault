@@ -1,4 +1,4 @@
-#include "vault.hpp"
+#include "esterv/crypto/vault.hpp"
 #include <QCryptographicHash>
 #include <QDir>
 #include <QFileInfo>
@@ -24,7 +24,7 @@ EM_JS(char *, readFromLS, (const char *name), {
 
 #endif
 
-namespace qutils
+namespace Esterv::Crypto
 {
 
 Vault::Vault(QObject *parent, const QString filename)
@@ -125,7 +125,7 @@ void Vault::readFromFile()
 
     char *str = readFromLS(m_file.toUtf8().data());
 
-    const auto var = QByteArray(str, strlen(str)); //**********Check this
+    const auto var = QByteArray(str, strlen(str));
 
     if (fromArray(QByteArray::fromHex(var)))
     {
@@ -203,13 +203,12 @@ QByteArray Vault::getData(QByteArray password) const
     }
     return QByteArray();
 }
-bool Vault::setDataString(QString plainText, QString password)
+bool Vault::setDataString(QString password, QString plainText)
 {
-    return setData(plainText.toUtf8(), password.toUtf8());
+    return setData(password.toUtf8(), plainText.toUtf8());
 }
-bool Vault::setData(QByteArray plainText, QByteArray password)
+bool Vault::setData(QByteArray password, QByteArray plainText)
 {
-
     if (password.size() < 8)
         return false;
 
@@ -248,4 +247,4 @@ QByteArray Vault::getContent(QByteArray key) const
     plainText.resize(plaintext_len);
     return plainText;
 }
-} // namespace qutils
+} // namespace Esterv::Crypto

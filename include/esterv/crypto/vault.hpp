@@ -14,13 +14,13 @@
 #include <QtQml>
 #endif
 
-#if defined(WINDOWS_QVAULT)
+#if defined(WINDOWS_VAULT)
 #define QVAULT_EXPORT Q_DECL_EXPORT
 #else
 #define QVAULT_EXPORT Q_DECL_IMPORT
 #endif
 
-namespace qutils
+namespace Esterv::Crypto
 {
 
 class QVAULT_EXPORT Vault : public QObject
@@ -38,7 +38,7 @@ class QVAULT_EXPORT Vault : public QObject
                                          "vault"
 #else
                                          (QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) +
-                                          "/qvault.bin")
+                                          "/estervvault.bin")
 #endif
     );
     Q_INVOKABLE QString getDataString(QString password) const;
@@ -55,7 +55,7 @@ class QVAULT_EXPORT Vault : public QObject
     Q_INVOKABLE bool setDataString(QString plainText, QString password);
     Q_INVOKABLE bool changePassword(QString oldPass, QString newPass);
     Q_INVOKABLE bool checkPassword(QString password) const;
-    bool setData(QByteArray plainText, QByteArray password);
+    bool setData(QByteArray password, QByteArray plainText);
     bool isEmpty() const
     {
         return m_isEmpty;
@@ -88,4 +88,4 @@ class QVAULT_EXPORT Vault : public QObject
     EVP_CIPHER_CTX *m_ctx;
     bool m_isEmpty;
 };
-} // namespace qutils
+} // namespace Esterv::Crypto

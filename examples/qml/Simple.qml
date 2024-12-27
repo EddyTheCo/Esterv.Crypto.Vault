@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Esterv.Styles.Simple
 import Esterv.CustomControls
-import Esterv.Utils.Vault
+import Esterv.Crypto.Vault
 
 ApplicationWindow {
     id: window
@@ -41,7 +41,7 @@ ApplicationWindow {
                 enabled: pass.text.length > 8
                 onClicked: {
                     if (pop1.isSet) {
-                        if (!vault.setDataString(setdata.text, pass.text)) {
+                        if (!vault.setDataString(pass.text, setdata.text)) {
                             pass.ToolTip.show(qsTr("Wrong password"), 5000);
                         } else {
                             pop1.close();

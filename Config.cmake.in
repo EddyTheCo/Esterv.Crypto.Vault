@@ -1,5 +1,9 @@
 @PACKAGE_INIT@
 include(CMakeFindDependencyMacro)
-find_dependency(Qt6 REQUIRED COMPONENTS Core Gui Quick Core Network )
+if(@USE_QML@)
+  find_dependency(Qt6 COMPONENTS Core Gui Quick Core Network)
+else()
+  find_dependency(Qt6 COMPONENTS Core Network)
+endif()
 find_dependency(OpenSSL)
-include ( "${CMAKE_CURRENT_LIST_DIR}/QtVault-config.cmake" )
+include ( "${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@-config.cmake" )
