@@ -1,4 +1,4 @@
-#include "vault.hpp"
+#include "esterv/crypto/vault.hpp"
 #include <QCryptographicHash>
 #include <QDir>
 #include <QFileInfo>
@@ -125,7 +125,7 @@ void Vault::readFromFile()
 
     char *str = readFromLS(m_file.toUtf8().data());
 
-    const auto var = QByteArray(str, strlen(str)); //**********Check this
+    const auto var = QByteArray(str, strlen(str));
 
     if (fromArray(QByteArray::fromHex(var)))
     {
