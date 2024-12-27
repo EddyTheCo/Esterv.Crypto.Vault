@@ -15,8 +15,6 @@ int main(int argc, char *argv[])
 #endif
     QQmlApplicationEngine engine;
     engine.addImportPath("qrc:/esterVtech.com/imports");
-    const QUrl url = QUrl("qrc:/esterVtech.com/imports/Esimple/qml/simple.qml");
-
-    engine.load(url);
+    engine.loadFromModule("ExamplesSimple", "Simple");
     return app.exec();
 }
