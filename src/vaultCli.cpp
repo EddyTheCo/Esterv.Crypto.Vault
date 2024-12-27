@@ -22,16 +22,13 @@ int main(int argc, char *argv[])
                        (QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/estervvault.bin");
     parser.addPositionalArgument("file", QCoreApplication::translate("main", fileHelp.toLocal8Bit().constData()));
 
-    QCommandLineOption getO(QStringList() << "g"
-                                          << "get",
+    QCommandLineOption getO(QStringList() << "g" << "get",
                             QCoreApplication::translate("main", "get data from the vault => Get Mode."));
     parser.addOption(getO);
-    QCommandLineOption setO(QStringList() << "s"
-                                          << "set",
+    QCommandLineOption setO(QStringList() << "s" << "set",
                             QCoreApplication::translate("main", "set the data of the vault => Set Mode."));
     parser.addOption(setO);
-    QCommandLineOption setP(QStringList() << "c"
-                                          << "cpass",
+    QCommandLineOption setP(QStringList() << "c" << "cpass",
                             QCoreApplication::translate("main", "change vault password => Set Mode."));
     parser.addOption(setP);
 

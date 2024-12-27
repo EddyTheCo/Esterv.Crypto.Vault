@@ -100,7 +100,7 @@ if(OPENSSL_FOUND
     target_link_libraries(vault PUBLIC Qt6::Gui Qt6::Quick)
     target_compile_definitions(vault PRIVATE USE_QML)
     target_include_directories(
-                   vault PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/esterv/crypto)
+      vault PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/esterv/crypto)
 
     install(
       TARGETS ${out_targets_var}
@@ -125,7 +125,6 @@ if(OPENSSL_FOUND
   target_include_directories(
     vault PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
-
 
   target_link_libraries(vault PUBLIC Qt6::Core Qt6::Network OpenSSL::Crypto)
   target_compile_definitions(vault PRIVATE WINDOWS_VAULT)

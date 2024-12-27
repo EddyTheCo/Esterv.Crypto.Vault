@@ -1,11 +1,16 @@
 if(USE_QML AND BUILD_EXAMPLES)
-    FetchContent_Declare(
-      EstervDesigns
-      GIT_REPOSITORY https://github.com/EddyTheCo/Esterv.Designs.git
-      GIT_TAG v2.0.0
-      FIND_PACKAGE_ARGS 2 COMPONENTS SimpleStyle
-      CustomControls FlatControl CONFIG)
-    FetchContent_MakeAvailable(EstervDesigns)
+  FetchContent_Declare(
+    EstervDesigns
+    GIT_REPOSITORY https://github.com/EddyTheCo/Esterv.Designs.git
+    GIT_TAG v2.0.0
+    FIND_PACKAGE_ARGS
+    2
+    COMPONENTS
+    SimpleStyle
+    CustomControls
+    FlatControl
+    CONFIG)
+  FetchContent_MakeAvailable(EstervDesigns)
 
   if(EMSCRIPTEN OR ANDROID)
     find_package(Qt6 REQUIRED COMPONENTS QuickControls2)
@@ -37,7 +42,8 @@ if(USE_QML AND BUILD_EXAMPLES)
       TARGETS ${example}
       COMPONENT ${PROJECT_NAME}-examples
       BUNDLE DESTINATION . COMPONENT ${PROJECT_NAME}-examples
-      LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT ${PROJECT_NAME}-examples)
+      LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+              COMPONENT ${PROJECT_NAME}-examples)
     if(QTDEPLOY)
       qt_generate_deploy_qml_app_script(TARGET ${example} OUTPUT_SCRIPT
                                         deploy_script)
