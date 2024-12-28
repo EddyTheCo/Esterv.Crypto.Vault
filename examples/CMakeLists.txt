@@ -33,8 +33,8 @@ if(USE_QML AND BUILD_EXAMPLES)
     target_link_libraries(
       ${example}
       PRIVATE
-        vault
-        $<$<STREQUAL:$<TARGET_PROPERTY:vault,TYPE>,STATIC_LIBRARY>:vaultplugin>)
+        Vault
+        $<$<STREQUAL:$<TARGET_PROPERTY:Vault,TYPE>,STATIC_LIBRARY>:Vaultplugin>)
 
     set_target_properties(${example} PROPERTIES WIN32_EXECUTABLE ON
                                                 MACOSX_BUNDLE ON)
