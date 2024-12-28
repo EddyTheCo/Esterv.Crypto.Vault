@@ -77,13 +77,13 @@ if(OPENSSL_FOUND
    AND Qt6_FOUND)
   qt_standard_project_setup()
 
-  add_library(vault include/esterv/crypto/vault.hpp src/vault.cpp)
-  add_library(Esterv::vault ALIAS vault)
-  set_target_properties(vault PROPERTIES VERSION ${VERSION} SOVERSION
+  add_library(Vault include/esterv/crypto/vault.hpp src/vault.cpp)
+  add_library(Esterv::Vault ALIAS Vault)
+  set_target_properties(Vault PROPERTIES VERSION ${VERSION} SOVERSION
                                                             ${VERSION_MAJOR})
   if(USE_QML)
     qt6_add_qml_module(
-      vault
+      Vault
       URI
       Esterv.Crypto.Vault
       VERSION
@@ -96,11 +96,11 @@ if(OPENSSL_FOUND
       ${CMAKE_BINARY_DIR}/Esterv/Crypto/Vault
       IMPORT_PATH
       ${CMAKE_BINARY_DIR})
-    add_library(Esterv::vaultplugin ALIAS vaultplugin)
-    target_link_libraries(vault PUBLIC Qt6::Gui Qt6::Quick)
-    target_compile_definitions(vault PRIVATE USE_QML)
+    add_library(Esterv::Vaultplugin ALIAS Vaultplugin)
+    target_link_libraries(Vault PUBLIC Qt6::Gui Qt6::Quick)
+    target_compile_definitions(Vault PRIVATE USE_QML)
     target_include_directories(
-      vault PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/esterv/crypto)
+      Vault PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/esterv/crypto)
 
     install(
       TARGETS ${out_targets_var}
@@ -114,7 +114,7 @@ if(OPENSSL_FOUND
       DESTINATION ${CMAKE_INSTALL_LIBDIR}/Esterv/Crypto
       COMPONENT ${PROJECT_NAME}-qml)
     install(
-      TARGETS vaultplugin
+      TARGETS Vaultplugin
       EXPORT ${PROJECT_NAME}-config
       DESTINATION ${CMAKE_INSTALL_LIBDIR}/Esterv/Crypto/Vault
       COMPONENT ${PROJECT_NAME}-qml
@@ -123,33 +123,33 @@ if(OPENSSL_FOUND
   endif(USE_QML)
 
   target_include_directories(
-    vault PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    Vault PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
 
-  target_link_libraries(vault PUBLIC Qt6::Core Qt6::Network OpenSSL::Crypto)
-  target_compile_definitions(vault PRIVATE WINDOWS_VAULT)
+  target_link_libraries(Vault PUBLIC Qt6::Core Qt6::Network OpenSSL::Crypto)
+  target_compile_definitions(Vault PRIVATE WINDOWS_VAULT)
   if(EMSCRIPTEN)
-    target_compile_definitions(vault PRIVATE USE_EMSCRIPTEN)
+    target_compile_definitions(Vault PRIVATE USE_EMSCRIPTEN)
   endif(EMSCRIPTEN)
 
   if(NOT EMSCRIPTEN AND NOT ANDROID)
-    add_executable(vaultCli src/vaultCli.cpp)
-    target_link_libraries(vaultCli PRIVATE vault)
-    set_target_properties(vaultCli PROPERTIES WIN32_EXECUTABLE ON MACOSX_BUNDLE
+    add_executable(VaultCli src/vault_cli.cpp)
+    target_link_libraries(VaultCli PRIVATE Vault)
+    set_target_properties(VaultCli PROPERTIES WIN32_EXECUTABLE ON MACOSX_BUNDLE
                                                                   ON)
     install(
-      TARGETS vaultCli
+      TARGETS VaultCli
       EXPORT ${PROJECT_NAME}-config
       COMPONENT ${PROJECT_NAME}-cli
       BUNDLE DESTINATION . COMPONENT ${PROJECT_NAME}-cli)
     if(QTDEPLOY)
-      qt_generate_deploy_app_script(TARGET vaultCli OUTPUT_SCRIPT deploy_script)
+      qt_generate_deploy_app_script(TARGET VaultCli OUTPUT_SCRIPT deploy_script)
       install(SCRIPT ${deploy_script} COMPONENT ${PROJECT_NAME}-cli)
     endif(QTDEPLOY)
   endif(NOT EMSCRIPTEN AND NOT ANDROID)
 
   install(
-    TARGETS vault
+    TARGETS Vault
     EXPORT ${PROJECT_NAME}-config
     DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT ${PROJECT_NAME}

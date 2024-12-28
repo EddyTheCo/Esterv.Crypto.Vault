@@ -28,11 +28,11 @@ FetchContent_Declare(
 	)
 FetchContent_MakeAvailable(EstervVault)
 
-target_link_libraries(<target> <PRIVATE|PUBLIC|INTERFACE> Esterv::vault)
+target_link_libraries(<target> <PRIVATE|PUBLIC|INTERFACE> Esterv::Vault)
 ```
 If you want to use the QML module also add
 ```
-target_link_libraries(<target> <PRIVATE|PUBLIC|INTERFACE> $<$<STREQUAL:$<TARGET_PROPERTY:Esterv::vault,TYPE>,STATIC_LIBRARY>:Esterv::vaultplugin>)
+target_link_libraries(<target> <PRIVATE|PUBLIC|INTERFACE> $<$<STREQUAL:$<TARGET_PROPERTY:Esterv::Vault,TYPE>,STATIC_LIBRARY>:Esterv::Vaultplugin>)
 ```
 
 ## API reference
