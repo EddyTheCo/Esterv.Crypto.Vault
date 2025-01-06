@@ -14,16 +14,21 @@
 #include <QtQml>
 #endif
 
-#if defined(WINDOWS_VAULT)
-#define QVAULT_EXPORT Q_DECL_EXPORT
+#if defined(VAULT_SHARED)
+#include <QtCore/QtGlobal>
+#ifdef WINDOWS_EXPORT
+#define VAULT_EXPORT Q_DECL_EXPORT
 #else
-#define QVAULT_EXPORT Q_DECL_IMPORT
+#define VAULT_EXPORT Q_DECL_IMPORT
+#endif
+#else
+#define VAULT_EXPORT
 #endif
 
 namespace Esterv::Crypto
 {
 
-class QVAULT_EXPORT Vault : public QObject
+class VAULT_EXPORT Vault : public QObject
 {
 
     Q_OBJECT
