@@ -128,9 +128,9 @@ if(OPENSSL_FOUND
 
   target_link_libraries(Vault PUBLIC Qt6::Core Qt6::Network OpenSSL::Crypto)
   target_compile_definitions(
-    Vault 
+    Vault
     PUBLIC
-    $<IF:$<AND:$<BOOL:WIN32>,$<STREQUAL:$<TARGET_PROPERTY:Vault,TYPE>,SHARED_LIBRARY>>,VAULT_SHARED,>
+      $<IF:$<AND:$<BOOL:WIN32>,$<STREQUAL:$<TARGET_PROPERTY:Vault,TYPE>,SHARED_LIBRARY>>,VAULT_SHARED,>
   )
   target_compile_definitions(Vault PRIVATE WINDOWS_EXPORT)
   if(EMSCRIPTEN)
